@@ -9,12 +9,10 @@ import {
   Image,
   ViewStyle,
   TextStyle,
-  TouchableOpacity,
 } from 'react-native';
 import {PokemonContext} from '../context/PokemonContext';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {fetchPokemonDetails, PokemonDetails} from '../services/pokeapi';
-import EditPokemonModal from '../components/EditPokemonModal';
 import {DataListStackParamList} from '../navigation/AppNavigator';
 
 type DetailScreenRouteProp = RouteProp<DataListStackParamList, 'Detail'>;
@@ -43,7 +41,7 @@ const DetailRow = ({
 };
 
 const DetailScreen = () => {
-  const {pokemons, updatePokemon} = useContext(PokemonContext);
+  const {pokemons} = useContext(PokemonContext);
   const route = useRoute<DetailScreenRouteProp>();
   const navigation = useNavigation();
   const {pokemonId} = route.params;
@@ -52,7 +50,6 @@ const DetailScreen = () => {
   const [details, setDetails] = useState<PokemonDetails | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     if (pokemon && pokemon.url) {
@@ -63,29 +60,6 @@ const DetailScreen = () => {
         .finally(() => setLoading(false));
     }
   }, [pokemon]);
-
-  const handleEditPokemon = (updatedDetails: Partial<PokemonDetails>) => {
-    if (!details || !pokemon) return;
-
-    // Barrejem els detalls actualitzats amb els existents
-    const newDetails = {
-      ...details,
-      ...updatedDetails,
-    };
-
-    // Actualitzem l'estat dels detalls immediatament
-    setDetails(newDetails);
-
-    // Actualitzem el pokemon al context
-    // Només mantenim l'ID i altres camps necessaris, però actualitzem la resta
-    const updatedPokemon = {
-      ...pokemon,
-      // Incloem les propietats que volem actualitzar al llistat principal
-      // El nom no el canviem perquè no és editable
-    };
-
-    updatePokemon(updatedPokemon);
-  };
 
   if (!pokemon) {
     return (
@@ -122,20 +96,6 @@ const DetailScreen = () => {
           <DetailRow
             name="Abilities"
             value={details.abilities.map(a => a.ability.name).join(', ')}
-          />
-
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => setIsEditModalVisible(true)}>
-            <Text style={styles.editButtonText}>Editar Pokemon</Text>
-          </TouchableOpacity>
-
-          <EditPokemonModal
-            visible={isEditModalVisible}
-            onClose={() => setIsEditModalVisible(false)}
-            onSave={handleEditPokemon}
-            pokemonDetails={details}
-            key={`modal-${JSON.stringify(details)}`} // Afegim key per forçar refrescament
           />
         </View>
       ) : (
