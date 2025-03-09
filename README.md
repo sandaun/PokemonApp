@@ -1,4 +1,4 @@
-# Digital Hub React Native
+# Pokemon App React Native
 
 A React Native mobile application for exploring Pokémon data with features including geolocation tracking, settings management, and detailed Pokémon information.
 
