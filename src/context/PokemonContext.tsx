@@ -70,7 +70,9 @@ export const PokemonProvider: React.FC<PokemonProviderProps> = ({children}) => {
 
   const updatePokemon = (updatedPokemon: Pokemon) => {
     setPokemons(prev =>
-      prev.map(p => (p.id === updatedPokemon.id ? updatedPokemon : p)),
+      prev.map(p =>
+        p.id === updatedPokemon.id ? {...p, ...updatedPokemon} : p,
+      ),
     );
   };
 

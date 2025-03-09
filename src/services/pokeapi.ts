@@ -2,6 +2,13 @@ export type Pokemon = {
   id: number;
   name: string;
   url: string;
+  height?: number;
+  weight?: number;
+  abilities?: {ability: {name: string}}[];
+  types?: {type: {name: string}}[];
+  sprites?: {
+    front_default: string;
+  };
 };
 
 export type PokemonDetails = {
@@ -11,7 +18,9 @@ export type PokemonDetails = {
   weight: number;
   abilities: {ability: {name: string}}[];
   types: {type: {name: string}}[];
-  sprites: {front_default: string};
+  sprites: {
+    front_default: string;
+  };
 };
 
 export const fetchPokemons = async (): Promise<Pokemon[]> => {

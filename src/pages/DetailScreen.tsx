@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Image,
+  TouchableOpacity,
   ViewStyle,
   TextStyle,
 } from 'react-native';
@@ -14,6 +15,7 @@ import {PokemonContext} from '../context/PokemonContext';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {fetchPokemonDetails, PokemonDetails} from '../services/pokeapi';
 import {DataListStackParamList} from '../navigation/AppNavigator';
+import EditPokemonModal from '../components/EditPokemonModal';
 
 type DetailScreenRouteProp = RouteProp<DataListStackParamList, 'Detail'>;
 
@@ -41,7 +43,7 @@ const DetailRow = ({
 };
 
 const DetailScreen = () => {
-  const {pokemons} = useContext(PokemonContext);
+  const {pokemons, updatePokemon} = useContext(PokemonContext);
   const route = useRoute<DetailScreenRouteProp>();
   const navigation = useNavigation();
   const {pokemonId} = route.params;
@@ -51,15 +53,37 @@ const DetailScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+
   useEffect(() => {
-    if (pokemon && pokemon.url) {
+    if (pokemon && pokemon.url && !pokemon.height) {
       setLoading(true);
       fetchPokemonDetails(pokemon.url)
-        .then(data => setDetails(data))
+        .then(data => {
+          setDetails(data);
+          updatePokemon({...pokemon, ...data});
+        })
         .catch(err => setError(err.message))
         .finally(() => setLoading(false));
+    } else if (pokemon) {
+      setDetails(pokemon as PokemonDetails);
     }
-  }, [pokemon]);
+  }, [pokemon, updatePokemon]);
+
+  const handleEditPokemon = (updatedDetails: Partial<PokemonDetails>) => {
+    if (!details || !pokemon) {
+      return;
+    }
+
+    const newDetails: PokemonDetails = {
+      ...details,
+      ...updatedDetails,
+    };
+
+    setDetails(newDetails);
+    updatePokemon({...pokemon, ...newDetails});
+    setIsEditModalVisible(false);
+  };
 
   if (!pokemon) {
     return (
@@ -96,6 +120,19 @@ const DetailScreen = () => {
           <DetailRow
             name="Abilities"
             value={details.abilities.map(a => a.ability.name).join(', ')}
+          />
+
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setIsEditModalVisible(true)}>
+            <Text style={styles.editButtonText}>Edit</Text>
+          </TouchableOpacity>
+
+          <EditPokemonModal
+            visible={isEditModalVisible}
+            onClose={() => setIsEditModalVisible(false)}
+            onSave={handleEditPokemon}
+            pokemonDetails={details}
           />
         </View>
       ) : (
@@ -134,10 +171,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
@@ -179,6 +213,34 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
+    marginBottom: 12,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 });
 
