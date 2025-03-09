@@ -7,6 +7,7 @@ type FormInputProps = {
   onChangeText: (text: string) => void;
   placeholder: string;
   keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
+  testID?: string;
 };
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -15,9 +16,10 @@ const FormInput: React.FC<FormInputProps> = ({
   onChangeText,
   placeholder,
   keyboardType = 'default',
+  testID,
 }) => {
   return (
-    <View style={styles.inputGroup}>
+    <View style={styles.inputGroup} testID={testID}>
       <Text style={styles.inputLabel}>{label}</Text>
       <TextInput
         style={styles.input}

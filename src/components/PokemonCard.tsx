@@ -14,13 +14,17 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
   onDelete,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.card}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.card}
+      testID="pokemon-card">
       <Text style={styles.name}>{pokemon.name}</Text>
       <View style={styles.buttonContainer}>
         <Button
           title="Delete"
           onPress={() => onDelete(pokemon.id)}
           color="#dc3545"
+          testID="delete-button"
         />
       </View>
     </TouchableOpacity>

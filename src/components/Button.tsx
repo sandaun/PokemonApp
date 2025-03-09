@@ -14,6 +14,7 @@ type ButtonProps = {
   style?: ViewStyle;
   textStyle?: TextStyle;
   variant?: 'primary' | 'secondary' | 'danger';
+  testID?: string;
 };
 
 const Button = ({
@@ -23,6 +24,7 @@ const Button = ({
   style,
   textStyle,
   variant = 'primary',
+  testID,
 }: ButtonProps) => {
   // Use the appropriate button text - title takes precedence if both are provided
   const buttonText = title || label || '';
@@ -33,7 +35,8 @@ const Button = ({
   return (
     <TouchableOpacity
       style={[styles.button, variantStyle, style]}
-      onPress={onPress}>
+      onPress={onPress}
+      testID={testID}>
       <Text style={[styles.buttonText, textStyle]}>{buttonText}</Text>
     </TouchableOpacity>
   );

@@ -17,6 +17,7 @@ type EditPokemonModalProps = {
   onClose: () => void;
   onSave: (updatedDetails: Partial<PokemonDetails>) => void;
   pokemonDetails: PokemonDetails | null;
+  testID?: string;
 };
 
 const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
@@ -24,6 +25,7 @@ const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
   onClose,
   onSave,
   pokemonDetails,
+  testID,
 }) => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
@@ -104,11 +106,13 @@ const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
       visible={visible}
       animationType="slide"
       transparent={true}
-      onRequestClose={onClose}>
+      onRequestClose={onClose}
+      testID={testID}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.centeredView}>
-        <View style={styles.modalView}>
+        style={styles.centeredView}
+        testID={`${testID}-container`}>
+        <View style={styles.modalView} testID={`${testID}-view`}>
           <Text style={styles.modalTitle}>Edit Pokemon</Text>
 
           {pokemonDetails && (
@@ -122,6 +126,7 @@ const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
               onChangeText={setHeight}
               keyboardType="numeric"
               placeholder="Height in decimeters"
+              testID={`${testID}-height-input`}
             />
 
             <FormInput
@@ -130,6 +135,7 @@ const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
               onChangeText={setWeight}
               keyboardType="numeric"
               placeholder="Weight in hectograms"
+              testID={`${testID}-weight-input`}
             />
 
             <FormInput
@@ -137,6 +143,7 @@ const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
               value={types}
               onChangeText={setTypes}
               placeholder="Ex: fire, flying"
+              testID={`${testID}-types-input`}
             />
 
             <FormInput
@@ -144,6 +151,7 @@ const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
               value={abilities}
               onChangeText={setAbilities}
               placeholder="Ex: flame, solar-power"
+              testID={`${testID}-abilities-input`}
             />
           </View>
 
@@ -153,12 +161,14 @@ const EditPokemonModal: React.FC<EditPokemonModalProps> = ({
               onPress={onClose}
               style={styles.cancelButton}
               variant="secondary"
+              testID={`${testID}-cancel-button`}
             />
             <Button
               title="Save"
               onPress={handleSave}
               style={styles.saveButton}
               variant="primary"
+              testID={`${testID}-save-button`}
             />
           </View>
         </View>

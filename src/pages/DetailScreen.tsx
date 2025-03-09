@@ -97,7 +97,11 @@ const DetailScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {loading ? (
-        <ActivityIndicator size="large" color="#3498db" />
+        <ActivityIndicator
+          size="large"
+          color="#3498db"
+          testID="loading-indicator"
+        />
       ) : error ? (
         <Text style={styles.errorText}>Error: {error} ❌</Text>
       ) : details ? (
@@ -108,6 +112,7 @@ const DetailScreen = () => {
               source={{uri: details.sprites.front_default}}
               style={styles.pokemonImage}
               resizeMode="contain"
+              testID="pokemon-image"
             />
           )}
           <DetailRow name="ID" value={details.id} />
@@ -124,7 +129,8 @@ const DetailScreen = () => {
 
           <TouchableOpacity
             style={styles.editButton}
-            onPress={() => setIsEditModalVisible(true)}>
+            onPress={() => setIsEditModalVisible(true)}
+            testID="edit-button">
             <Text style={styles.editButtonText}>Edit</Text>
           </TouchableOpacity>
 
@@ -133,6 +139,7 @@ const DetailScreen = () => {
             onClose={() => setIsEditModalVisible(false)}
             onSave={handleEditPokemon}
             pokemonDetails={details}
+            testID="edit-pokemon-modal"
           />
         </View>
       ) : (
